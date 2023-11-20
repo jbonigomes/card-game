@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Confetti from 'react-confetti'
 import ReactCardFlip from 'react-card-flip'
+import ConfettiExplosion from 'react-confetti-explosion'
 
 import './index.css'
 
@@ -56,26 +56,31 @@ const Game = () => {
 
   return (
     <>
-        {chunk(Object.entries(cards)).map((row, i) => (
-          <div key={i} className="row">
-            {row.map(([id, { hidden, image, nod }]) => (
-              <button onClick={flip(id)} key={id}>
-                <ReactCardFlip
-                  infinite
-                  isFlipped={!hidden}
-                  flipSpeedBackToFront={0.4}
-                  flipSpeedFrontToBack={0.4}
-                >
-                  <div className="card card-back" />
-                  <div className={`card card-front ${nod ? 'shake' : ''}`}>
-                    <img src={image} />
-                  </div>
-                </ReactCardFlip>
-              </button>
-            ))}
-          </div>
-        ))}
-        <Confetti width={window.innerWidth} height={window.innerHeight} run={gameFinished} />
+      {chunk(Object.entries(cards)).map((row, i) => (
+        <div key={i} className="row">
+          {row.map(([id, { hidden, image, nod }]) => (
+            <button onClick={flip(id)} key={id}>
+              <ReactCardFlip
+                infinite
+                isFlipped={!hidden}
+                flipSpeedBackToFront={0.4}
+                flipSpeedFrontToBack={0.4}
+              >
+                <div className="card card-back" />
+                <div className={`card card-front ${nod ? 'shake' : ''}`}>
+                  <img src={image} />
+                </div>
+              </ReactCardFlip>
+            </button>
+          ))}
+        </div>
+      ))}
+
+      {gameFinished && (
+        <div className="confetti">
+          <ConfettiExplosion particleCount={300} force={0.7} />
+        </div>
+      )}
     </>
   )
 }
