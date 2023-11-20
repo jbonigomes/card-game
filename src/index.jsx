@@ -20,18 +20,18 @@ const Game = () => {
   const [gameFinished, setGameFinished] = React.useState(false)
 
   const [cards, setCards] = React.useState({
-    1: { hidden: true, pair: 7, image: 'bandit.png' },
-    2: { hidden: true, pair: 8, image: 'bingo.png' },
-    3: { hidden: true, pair: 9, image: 'bluey.png' },
-    4: { hidden: true, pair: 10, image: 'chilli.png' },
-    5: { hidden: true, pair: 11, image: 'muffin.png' },
-    6: { hidden: true, pair: 12, image: 'socks.png' },
-    7: { hidden: true, pair: 1, image: 'bandit.png' },
-    8: { hidden: true, pair: 2, image: 'bingo.png' },
-    9: { hidden: true, pair: 3, image: 'bluey.png' },
-    10: { hidden: true, pair: 4, image: 'chilli.png' },
-    11: { hidden: true, pair: 5, image: 'muffin.png' },
-    12: { hidden: true, pair: 6, image: 'socks.png' },
+    1: { hidden: true, pair: 7, image: '/card-game/bandit.png' },
+    2: { hidden: true, pair: 8, image: '/card-game/bingo.png' },
+    3: { hidden: true, pair: 9, image: '/card-game/bluey.png' },
+    4: { hidden: true, pair: 10, image: '/card-game/chilli.png' },
+    5: { hidden: true, pair: 11, image: '/card-game/muffin.png' },
+    6: { hidden: true, pair: 12, image: '/card-game/socks.png' },
+    7: { hidden: true, pair: 1, image: '/card-game/bandit.png' },
+    8: { hidden: true, pair: 2, image: '/card-game/bingo.png' },
+    9: { hidden: true, pair: 3, image: '/card-game/bluey.png' },
+    10: { hidden: true, pair: 4, image: '/card-game/chilli.png' },
+    11: { hidden: true, pair: 5, image: '/card-game/muffin.png' },
+    12: { hidden: true, pair: 6, image: '/card-game/socks.png' },
   })
 
   const flip = (id) => () => {
