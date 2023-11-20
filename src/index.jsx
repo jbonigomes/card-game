@@ -6,18 +6,14 @@ import ConfettiExplosion from 'react-confetti-explosion'
 import './index.css'
 
 const Game = () => {
-  const chunk = (arr) => {
-    const chunkSize = 4
-    const chunks = []
-
-    for (let i = 0; i < arr.length; i += chunkSize) {
-      chunks.push(arr.slice(i, i + chunkSize))
-    }
-
+  const chunk = (arr, size = 4, chunks = []) => {
+    for (let i = 0; i < arr.length; i += size) chunks.push(arr.slice(i, i + size))
     return chunks
   }
 
-  const [gameFinished, setGameFinished] = React.useState(false)
+  const [lastDrawn, setLastDrawn] = React.useState(0)
+  const [gameOver, setGameOver] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
 
   const [cards, setCards] = React.useState({
     1: { hidden: true, pair: 7, image: '/card-game/bandit.png' },
@@ -35,22 +31,36 @@ const Game = () => {
   })
 
   const flip = (id) => () => {
-    const numberOfFlippedCards = Object.values(cards).filter(({ hidden }) => !hidden).length
+    if (cards[id].hidden && !isLoading) {
+      if (lastDrawn) {
+        if (cards[id].pair === lastDrawn) {
+          setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
+          setLastDrawn(0)
+        } else {
+          setIsLoading(true)
+          setCards({
+            ...cards,
+            [id]: { ...cards[id], hidden: false },
+          })
 
-    setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
+          setTimeout(() => {
+            setLastDrawn(0)
+            setIsLoading(false)
+            setCards({
+              ...cards,
+              [id]: { ...cards[id], hidden: true },
+              [lastDrawn]: { ...cards[lastDrawn], hidden: true },
+            })
+          }, 900)
+        }
+      } else {
+        setLastDrawn(+id)
+        setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
+      }
 
-    if (numberOfFlippedCards % 2 === 1 && cards[cards[id].pair].hidden) {
-      setTimeout(() => {
-        Object.entries(cards).forEach(([id, { hidden, pair }]) => {
-          if (!hidden && cards[pair].hidden) {
-            setCards({ ...cards, [id]: { ...cards[id], hidden: true, nod: false } })
-          }
-        })
-      }, 3000)
-    }
-
-    if (numberOfFlippedCards === Object.keys(cards).length - 1) {
-      setGameFinished(true)
+      if (Object.values(cards).filter(({ hidden }) => hidden).length === 1) {
+        setTimeout(() => setGameOver(true), 50)
+      }
     }
   }
 
@@ -76,9 +86,9 @@ const Game = () => {
         </div>
       ))}
 
-      {gameFinished && (
+      {gameOver && (
         <div className="confetti">
-          <ConfettiExplosion particleCount={300} force={0.7} />
+          <ConfettiExplosion particleCount={400} force={0.8} />
         </div>
       )}
     </>
