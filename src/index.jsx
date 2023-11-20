@@ -6,9 +6,25 @@ import ConfettiExplosion from 'react-confetti-explosion'
 import './index.css'
 
 const Game = () => {
-  const chunk = (arr, size = 4, chunks = []) => {
-    for (let i = 0; i < arr.length; i += size) chunks.push(arr.slice(i, i + size))
+  const chunk = (arr, size, chunks = []) => {
+    for (let i = 0; i < arr.length; i += size) {
+      chunks.push(arr.slice(i, i + size))
+    }
+
     return chunks
+  }
+
+  const shuffle = (arr) => {
+    let randomIndex
+    let currentIndex = arr.length
+
+    while (currentIndex > 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex--
+      ;[arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]]
+    }
+
+    return arr;
   }
 
   const [lastDrawn, setLastDrawn] = React.useState(0)
@@ -29,6 +45,8 @@ const Game = () => {
     11: { hidden: true, pair: 5, image: '/card-game/muffin.png' },
     12: { hidden: true, pair: 6, image: '/card-game/socks.png' },
   })
+
+  const order = React.useMemo(() => chunk(shuffle(Object.keys(cards)), 4), [])
 
   const flip = (id) => () => {
     if (cards[id].hidden && !isLoading) {
@@ -54,31 +72,35 @@ const Game = () => {
           }, 900)
         }
       } else {
-        setLastDrawn(+id)
+        setLastDrawn(id)
         setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
       }
 
       if (Object.values(cards).filter(({ hidden }) => hidden).length === 1) {
-        setTimeout(() => setGameOver(true), 50)
+        setGameOver(true)
       }
     }
   }
 
+  React.useEffect(() => {
+    console.log('the cards', cards)
+  }, [cards])
+
   return (
     <>
-      {chunk(Object.entries(cards)).map((row, i) => (
+      {order.map((row, i) => (
         <div key={i} className="row">
-          {row.map(([id, { hidden, image, nod }]) => (
-            <button onClick={flip(id)} key={id}>
+          {row.map((id) => (
+            <button onClick={flip(+id)} key={id} data-id={id}>
               <ReactCardFlip
                 infinite
-                isFlipped={!hidden}
                 flipSpeedBackToFront={0.4}
                 flipSpeedFrontToBack={0.4}
+                isFlipped={!cards[id].hidden}
               >
                 <div className="card card-back" />
-                <div className={`card card-front ${nod ? 'shake' : ''}`}>
-                  <img src={image} />
+                <div className="card">
+                  <img src={cards[id].image} />
                 </div>
               </ReactCardFlip>
             </button>
