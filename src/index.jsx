@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import ReactCardFlip from 'react-card-flip'
 import ConfettiExplosion from 'react-confetti-explosion'
 
-import { chunk, shuffle } from 'lodash'
+import { chunk, noop, shuffle } from 'lodash'
 
 import './index.css'
 
@@ -11,7 +11,6 @@ const Game = () => {
   const [lastDrawn, setLastDrawn] = React.useState(0)
   const [gameOver, setGameOver] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
-
   const [cards, setCards] = React.useState({
     1: { hidden: true, pair: 7, image: '/card-game/bandit.png' },
     2: { hidden: true, pair: 8, image: '/card-game/bingo.png' },
@@ -30,36 +29,31 @@ const Game = () => {
   const order = React.useMemo(() => chunk(shuffle(Object.keys(cards)), 4), [])
 
   const flip = (id) => () => {
-    if (cards[id].hidden && !isLoading) {
-      if (lastDrawn) {
-        if (cards[id].pair === lastDrawn) {
-          setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
-          setLastDrawn(0)
-        } else {
-          setIsLoading(true)
-          setCards({
-            ...cards,
-            [id]: { ...cards[id], hidden: false },
-          })
+    setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
 
-          setTimeout(() => {
-            setLastDrawn(0)
-            setIsLoading(false)
-            setCards({
-              ...cards,
-              [id]: { ...cards[id], hidden: true },
-              [lastDrawn]: { ...cards[lastDrawn], hidden: true },
-            })
-          }, 900)
-        }
-      } else {
-        setLastDrawn(id)
-        setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
-      }
+    if (lastDrawn && cards[id].pair !== lastDrawn) {
+      setIsLoading(true)
+      setTimeout(() => {
+        setLastDrawn(0)
+        setIsLoading(false)
+        setCards({
+          ...cards,
+          [id]: { ...cards[id], hidden: true },
+          [lastDrawn]: { ...cards[lastDrawn], hidden: true },
+        })
+      }, 900)
+    }
 
-      if (Object.values(cards).filter(({ hidden }) => hidden).length === 1) {
-        setGameOver(true)
-      }
+    if (cards[id].pair === lastDrawn) {
+      setLastDrawn(0)
+    }
+
+    if (!lastDrawn) {
+      setLastDrawn(+id)
+    }
+
+    if (Object.values(cards).filter(({ hidden }) => hidden).length === 1) {
+      setGameOver(true)
     }
   }
 
@@ -68,14 +62,17 @@ const Game = () => {
       {order.map((row, i) => (
         <div key={i} className="row">
           {row.map((id) => (
-            <button onClick={flip(+id)} key={id} data-id={id}>
+            <button
+              key={id}
+              onClick={cards[id].hidden && !isLoading ? flip(id) : noop}
+            >
               <ReactCardFlip
                 infinite
                 flipSpeedBackToFront={0.4}
                 flipSpeedFrontToBack={0.4}
                 isFlipped={!cards[id].hidden}
               >
-                <div className="card card-back" />
+                <div className="card pattern" />
                 <div className="card">
                   <img src={cards[id].image} />
                 </div>
