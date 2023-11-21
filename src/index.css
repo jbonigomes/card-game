@@ -40,7 +40,7 @@ body {
   border-radius: 5px;
   align-items: center;
   justify-content: center;
-  box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
 }
 
 .card img {
@@ -55,8 +55,8 @@ body {
 }
 
 .pattern {
-  --top-left: linear-gradient(45deg, #606 25%, #404 25%) 0px 0/ 20px 20px;
-  --top-right: linear-gradient(315deg, #505 25%, transparent 25%) 0px 0/ 20px 20px;
+  --top-left: linear-gradient(45deg, #606 25%, #404 25%) 0 0/ 20px 20px;
+  --top-right: linear-gradient(315deg, #505 25%, transparent 25%) 0 0/ 20px 20px;
   --bottom-left: linear-gradient(225deg, #606 25%, transparent 25%) -10px 0/ 20px 20px;
   --bottom-right: linear-gradient(135deg, #505 25%, transparent 25%) -10px 0/ 20px 20px;
 
