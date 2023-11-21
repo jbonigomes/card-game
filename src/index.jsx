@@ -3,30 +3,11 @@ import ReactDOM from 'react-dom/client'
 import ReactCardFlip from 'react-card-flip'
 import ConfettiExplosion from 'react-confetti-explosion'
 
+import { chunk, shuffle } from 'lodash'
+
 import './index.css'
 
 const Game = () => {
-  const chunk = (arr, size, chunks = []) => {
-    for (let i = 0; i < arr.length; i += size) {
-      chunks.push(arr.slice(i, i + size))
-    }
-
-    return chunks
-  }
-
-  const shuffle = (arr) => {
-    let randomIndex
-    let currentIndex = arr.length
-
-    while (currentIndex > 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex)
-      currentIndex--
-      ;[arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]]
-    }
-
-    return arr;
-  }
-
   const [lastDrawn, setLastDrawn] = React.useState(0)
   const [gameOver, setGameOver] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
@@ -81,10 +62,6 @@ const Game = () => {
       }
     }
   }
-
-  React.useEffect(() => {
-    console.log('the cards', cards)
-  }, [cards])
 
   return (
     <>

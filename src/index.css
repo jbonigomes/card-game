@@ -1,3 +1,10 @@
+:root {
+  --top-left: linear-gradient(45deg, #404 25%, #202 25%) 0px 0/ 20px 20px;
+  --top-right: linear-gradient(315deg, #303 25%, transparent 25%) 0px 0/ 20px 20px;
+  --bottom-left: linear-gradient(225deg, #404 25%, transparent 25%) -10px 0/ 20px 20px;
+  --bottom-right: linear-gradient(135deg, #303 25%, transparent 25%) -10px 0/ 20px 20px;
+}
+
 body {
   margin: 0;
   background: #cbc;
@@ -47,9 +54,8 @@ body {
 }
 
 .card-back {
-  background-color: #202;
   opacity: 0.8;
-  background: linear-gradient(135deg, #303 25%, transparent 25%) -10px 0/ 20px 20px, linear-gradient(225deg, #404 25%, transparent 25%) -10px 0/ 20px 20px, linear-gradient(315deg, #303 25%, transparent 25%) 0px 0/ 20px 20px, linear-gradient(45deg, #404 25%, #202 25%) 0px 0/ 20px 20px;
+  background: var(--bottom-right), var(--bottom-left), var(--top-right), var(--top-left);
 }
 
 .confetti {
