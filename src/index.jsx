@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import ReactCardFlip from 'react-card-flip'
-import ConfettiExplosion from 'react-confetti-explosion'
+import ReactConfetti from 'react-confetti-explosion'
 
 import { chunk, noop, shuffle } from 'lodash'
 
@@ -30,8 +30,10 @@ const Game = () => {
   const order = React.useMemo(() => chunk(shuffle(Object.keys(cards)), 4), [reset])
 
   const flip = (id) => () => {
+    setLastDrawn(cards[id].pair === lastDrawn ? 0 : +id)
     setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
 
+    // It's a miss
     if (lastDrawn && cards[id].pair !== lastDrawn) {
       setIsLoading(true)
       setTimeout(() => {
@@ -45,21 +47,14 @@ const Game = () => {
       }, 900)
     }
 
-    if (cards[id].pair === lastDrawn) {
-      setLastDrawn(0)
-    }
-
-    if (!lastDrawn) {
-      setLastDrawn(+id)
-    }
-
+    // Game over
     if (Object.values(cards).filter(({ hidden }) => hidden).length === 1) {
       const newCards = Object.entries(cards).reduce((acc, [key, val]) => ({
         ...acc,
         [key]: { ...val, hidden: true },
       }), {})
 
-      setGameOver(true)
+      setTimeout(() => setGameOver(true), 10)
 
       setTimeout(() => {
         setLastDrawn(0)
@@ -72,7 +67,7 @@ const Game = () => {
   }
 
   return (
-    <>
+    <div className="board">
       {order.map((row, i) => (
         <div key={i} className="row">
           {row.map((id) => (
@@ -86,7 +81,9 @@ const Game = () => {
                 flipSpeedFrontToBack={0.4}
                 isFlipped={!cards[id].hidden}
               >
-                <div className="card pattern" />
+                <div className="card card-back">
+                  <div className="pattern" />
+                </div>
                 <div className="card">
                   <img src={cards[id].image} />
                 </div>
@@ -98,10 +95,10 @@ const Game = () => {
 
       {gameOver && (
         <div className="confetti">
-          <ConfettiExplosion particleCount={400} force={0.8} />
+          <ReactConfetti particleCount={400} force={0.8} />
         </div>
       )}
-    </>
+    </div>
   )
 }
 
