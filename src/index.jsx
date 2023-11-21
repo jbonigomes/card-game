@@ -8,6 +8,7 @@ import { chunk, noop, shuffle } from 'lodash'
 import './index.css'
 
 const Game = () => {
+  const [reset, setReset] = React.useState(false)
   const [lastDrawn, setLastDrawn] = React.useState(0)
   const [gameOver, setGameOver] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
@@ -26,7 +27,7 @@ const Game = () => {
     12: { hidden: true, pair: 6, image: '/card-game/socks.png' },
   })
 
-  const order = React.useMemo(() => chunk(shuffle(Object.keys(cards)), 4), [])
+  const order = React.useMemo(() => chunk(shuffle(Object.keys(cards)), 4), [reset])
 
   const flip = (id) => () => {
     setCards({ ...cards, [id]: { ...cards[id], hidden: false } })
@@ -53,7 +54,20 @@ const Game = () => {
     }
 
     if (Object.values(cards).filter(({ hidden }) => hidden).length === 1) {
+      const newCards = Object.entries(cards).reduce((acc, [key, val]) => ({
+        ...acc,
+        [key]: { ...val, hidden: true },
+      }), {})
+
       setGameOver(true)
+
+      setTimeout(() => {
+        setLastDrawn(0)
+        setReset(!reset)
+        setCards(newCards)
+        setGameOver(false)
+        setIsLoading(false)
+      }, 3000)
     }
   }
 
