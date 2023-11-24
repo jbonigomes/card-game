@@ -3,28 +3,40 @@ import ReactDOM from 'react-dom/client'
 import ReactCardFlip from 'react-card-flip'
 import ReactConfetti from 'react-confetti-explosion'
 
+import bandit from './images/bandit.png'
+import bingo from './images/bingo.png'
+import bluey from './images/bluey.png'
+import chilli from './images/chilli.png'
+import muffin from './images/muffin.png'
+import socks from './images/socks.png'
+
 import { chunk, noop, shuffle } from 'lodash'
+import { StatusBar } from '@capacitor/status-bar'
 
 import './index.css'
+
+// Consider iOS build issue:
+// https://stackoverflow.com/questions/76792138
 
 const Game = () => {
   const [reset, setReset] = React.useState(false)
   const [lastDrawn, setLastDrawn] = React.useState(0)
   const [gameOver, setGameOver] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
+  const [viewReady, setViewReady] = React.useState(false)
   const [cards, setCards] = React.useState({
-    1: { hidden: true, pair: 7, image: '/card-game/bandit.png' },
-    2: { hidden: true, pair: 8, image: '/card-game/bingo.png' },
-    3: { hidden: true, pair: 9, image: '/card-game/bluey.png' },
-    4: { hidden: true, pair: 10, image: '/card-game/chilli.png' },
-    5: { hidden: true, pair: 11, image: '/card-game/muffin.png' },
-    6: { hidden: true, pair: 12, image: '/card-game/socks.png' },
-    7: { hidden: true, pair: 1, image: '/card-game/bandit.png' },
-    8: { hidden: true, pair: 2, image: '/card-game/bingo.png' },
-    9: { hidden: true, pair: 3, image: '/card-game/bluey.png' },
-    10: { hidden: true, pair: 4, image: '/card-game/chilli.png' },
-    11: { hidden: true, pair: 5, image: '/card-game/muffin.png' },
-    12: { hidden: true, pair: 6, image: '/card-game/socks.png' },
+    1: { hidden: true, pair: 7, image: bandit },
+    2: { hidden: true, pair: 8, image: bingo },
+    3: { hidden: true, pair: 9, image: bluey },
+    4: { hidden: true, pair: 10, image: chilli },
+    5: { hidden: true, pair: 11, image: muffin },
+    6: { hidden: true, pair: 12, image: socks },
+    7: { hidden: true, pair: 1, image: bandit },
+    8: { hidden: true, pair: 2, image: bingo },
+    9: { hidden: true, pair: 3, image: bluey },
+    10: { hidden: true, pair: 4, image: chilli },
+    11: { hidden: true, pair: 5, image: muffin },
+    12: { hidden: true, pair: 6, image: socks },
   })
 
   const order = React.useMemo(() => chunk(shuffle(Object.keys(cards)), 4), [reset])
@@ -54,7 +66,7 @@ const Game = () => {
         [key]: { ...val, hidden: true },
       }), {})
 
-      setTimeout(() => setGameOver(true), 10)
+      setTimeout(() => setGameOver(true), 50)
 
       setTimeout(() => {
         setLastDrawn(0)
@@ -66,7 +78,18 @@ const Game = () => {
     }
   }
 
-  return (
+  React.useEffect(() => {
+    StatusBar
+      .hide()
+      .then(() => {
+        setViewReady(true)
+      })
+      .catch(() => {
+        setViewReady(true)
+      })
+  })
+
+  return !viewReady ? <div /> : (
     <div className="board">
       {order.map((row, i) => (
         <div key={i} className="row">

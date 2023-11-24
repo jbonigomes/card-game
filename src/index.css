@@ -3,19 +3,23 @@ body {
   background: #CBC;
 }
 
+.react-card-flip {
+  height: 100%;
+}
+
 .board {
-  gap: 10px;
+  gap: 30px;
   width: 100vw;
   height: 100vh;
   display: flex;
-  padding: 10px;
+  padding: 30px;
   box-sizing: border-box;
   flex-direction: column;
 }
 
 .row {
   flex: 1;
-  gap: 10px;
+  gap: 30px;
   display: flex;
   align-items: center;
 }
@@ -26,10 +30,6 @@ body {
   height: 100%;
   border: none;
   background: none;
-}
-
-.react-card-flip {
-  height: 100%;
 }
 
 .card {

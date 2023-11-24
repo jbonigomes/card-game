@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-npm run build
 cd dist
 git init
 git checkout -b main

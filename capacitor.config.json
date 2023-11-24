@@ -1,0 +1,8 @@
+{
+  "appId": "com.jbonigomes.cardgame",
+  "appName": "card-game",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
