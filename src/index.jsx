@@ -10,7 +10,7 @@ import chilli from './images/chilli.png'
 import muffin from './images/muffin.png'
 import socks from './images/socks.png'
 
-import { chunk, noop, shuffle } from 'lodash'
+import { noop, shuffle } from 'lodash'
 import { StatusBar } from '@capacitor/status-bar'
 
 import './index.css'
@@ -39,7 +39,7 @@ const Game = () => {
     12: { hidden: true, pair: 6, image: socks },
   })
 
-  const order = React.useMemo(() => chunk(shuffle(Object.keys(cards)), 4), [reset])
+  const order = React.useMemo(() => shuffle(Object.keys(cards)), [reset])
 
   const flip = (id) => () => {
     setLastDrawn(cards[id].pair === lastDrawn ? 0 : +id)
@@ -91,29 +91,25 @@ const Game = () => {
 
   return !viewReady ? <div /> : (
     <div className="board">
-      {order.map((row, i) => (
-        <div key={i} className="row">
-          {row.map((id) => (
-            <button
-              key={id}
-              onClick={cards[id].hidden && !isLoading ? flip(id) : noop}
-            >
-              <ReactCardFlip
-                infinite
-                flipSpeedBackToFront={0.4}
-                flipSpeedFrontToBack={0.4}
-                isFlipped={!cards[id].hidden}
-              >
-                <div className="card card-back">
-                  <div className="pattern" />
-                </div>
-                <div className="card">
-                  <img src={cards[id].image} />
-                </div>
-              </ReactCardFlip>
-            </button>
-          ))}
-        </div>
+      {order.map((id) => (
+        <button
+          key={id}
+          onClick={cards[id].hidden && !isLoading ? flip(id) : noop}
+        >
+          <ReactCardFlip
+            infinite
+            flipSpeedBackToFront={0.4}
+            flipSpeedFrontToBack={0.4}
+            isFlipped={!cards[id].hidden}
+          >
+            <div className="card card-back">
+              <div className="pattern" />
+            </div>
+            <div className="card">
+              <img src={cards[id].image} />
+            </div>
+          </ReactCardFlip>
+        </button>
       ))}
 
       {gameOver && (

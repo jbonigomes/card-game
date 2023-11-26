@@ -1,6 +1,26 @@
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
+  height: 100%;
   background: #CBC;
+}
+
+button {
+  padding: 0;
+  border: none;
+  width: 250px;
+  height: 250px;
+  background: none;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .react-card-flip {
@@ -8,28 +28,10 @@ body {
 }
 
 .board {
-  gap: 30px;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  padding: 30px;
-  box-sizing: border-box;
-  flex-direction: column;
-}
-
-.row {
-  flex: 1;
-  gap: 30px;
-  display: flex;
-  align-items: center;
-}
-
-.row > button {
-  flex: 1;
-  padding: 0;
-  height: 100%;
-  border: none;
-  background: none;
+  gap: 10px;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .card {
