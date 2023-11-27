@@ -19,6 +19,7 @@ import './index.css'
 // https://stackoverflow.com/questions/76792138
 
 const Game = () => {
+  const [order, setOrder] = React.useState([])
   const [reset, setReset] = React.useState(false)
   const [lastDrawn, setLastDrawn] = React.useState(0)
   const [gameOver, setGameOver] = React.useState(false)
@@ -38,8 +39,6 @@ const Game = () => {
     11: { hidden: true, pair: 5, image: muffin },
     12: { hidden: true, pair: 6, image: socks },
   })
-
-  const order = React.useMemo(() => shuffle(Object.keys(cards)), [reset])
 
   const flip = (id) => () => {
     setLastDrawn(cards[id].pair === lastDrawn ? 0 : +id)
@@ -61,19 +60,19 @@ const Game = () => {
 
     // Game over
     if (Object.values(cards).filter(({ hidden }) => hidden).length === 1) {
-      const newCards = Object.entries(cards).reduce((acc, [key, val]) => ({
-        ...acc,
-        [key]: { ...val, hidden: true },
-      }), {})
-
-      setTimeout(() => setGameOver(true), 50)
+      setTimeout(() => setGameOver(true), 10)
 
       setTimeout(() => {
         setLastDrawn(0)
         setReset(!reset)
-        setCards(newCards)
         setGameOver(false)
         setIsLoading(false)
+        setCards(
+          Object.entries(cards).reduce((acc, [key, val]) => ({
+            ...acc,
+            [key]: { ...val, hidden: true },
+          }), {})
+        )
       }, 3000)
     }
   }
@@ -81,13 +80,33 @@ const Game = () => {
   React.useEffect(() => {
     StatusBar
       .hide()
-      .then(() => {
-        setViewReady(true)
-      })
-      .catch(() => {
-        setViewReady(true)
-      })
-  })
+      .then(() => setViewReady(true))
+      .catch(() => setViewReady(true))
+  }, [])
+
+  React.useEffect(() => {
+    setIsLoading(true)
+    setOrder(shuffle(Object.keys(cards)))
+
+    setTimeout(() => {
+      setCards(
+        Object.entries(cards).reduce((acc, [key, val]) => ({
+          ...acc,
+          [key]: { ...val, hidden: false },
+        }), {})
+      )
+    }, 1000)
+
+    setTimeout(() => {
+      setIsLoading(false)
+      setCards(
+        Object.entries(cards).reduce((acc, [key, val]) => ({
+          ...acc,
+          [key]: { ...val, hidden: true },
+        }), {})
+      )
+    }, 4000)
+  }, [reset])
 
   return !viewReady ? <div /> : (
     <div className="board">
